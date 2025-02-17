@@ -4,6 +4,7 @@ import com.example.sparta_3rd_newsfeed.member.dto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
 
     @Autowired
     public MemberService(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder) {
@@ -35,12 +37,14 @@ public class MemberService {
         }
 
         // 3. 새 비밀번호 형식 검증 및 변경
-        if (updateRequestDto.getNewPassword() != null && !updateRequestDto.getNewPassword().isEmpty()) {
-            if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getPasswordcheck())) {
+        // 3. 새 비밀번호 형식 검증 및 변경
+        if (updateRequestDto.isPasswordcheck()) {  // passwordcheck가 true일 때 새 비밀번호 확인
+            if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getNewPassword())) {
                 throw new IllegalArgumentException("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
             }
 
-            // 비밀번호 형식 검증 (8~16자, 영문자, 숫자, 특수문자 각 1개 이상)
+
+        // 비밀번호 형식 검증 (8~16자, 영문자, 숫자, 특수문자 각 1개 이상)
             String passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,16}$";
             Pattern pattern = Pattern.compile(passwordRegex);
             Matcher matcher = pattern.matcher(updateRequestDto.getNewPassword());
