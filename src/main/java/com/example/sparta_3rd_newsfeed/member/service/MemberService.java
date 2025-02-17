@@ -73,4 +73,5 @@ public class MemberService {
         // 6. 수정된 회원 저장
         return memberRepository.save(member);
     }
+
 }
