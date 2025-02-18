@@ -48,9 +48,9 @@ public class FriendController {
         return new ResponseEntity<>(pendingRequests, HttpStatus.OK);
     }
 
-    @GetMapping("/followers")
+    @GetMapping("/{memberId}/followers")
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getFollowers(
-            @RequestParam Long memberId,
+            @PathVariable Long memberId,
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -58,9 +58,9 @@ public class FriendController {
         return new ResponseEntity<>(friendService.getFollowers(memberId, name, page, size), HttpStatus.OK);
     }
 
-    @GetMapping("/followings")
+    @GetMapping("/{memberId}/followings")
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getFollowings(
-            @RequestParam Long memberId,
+            @PathVariable Long memberId,
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
