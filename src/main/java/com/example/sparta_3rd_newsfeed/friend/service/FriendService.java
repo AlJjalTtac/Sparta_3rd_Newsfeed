@@ -84,7 +84,7 @@ public class FriendService {
             friends = friendRepository.findByReceiverId(receiver.getId(), FriendStatus.ACCEPTED, pageable);
         }
 
-        Page<FriendResponseDto> friendsDto = friends.map(f -> new FriendResponseDto(f.getId(), f.getSender().getId(), f.getSender().getMemberName(), f.getSender().getEmail()));
+        Page<FriendResponseDto> friendsDto = friends.map(f -> new FriendResponseDto(f.getId(), f.getSender().getId(), f.getSender().getUsername(), f.getSender().getEmail()));
 
         return new PageResponseDto<>(friendsDto);
     }
@@ -102,7 +102,7 @@ public class FriendService {
             friends = friendRepository.findBySenderId(sender.getId(), FriendStatus.ACCEPTED, pageable);
         }
 
-        Page<FriendResponseDto> friendsDto = friends.map(f -> new FriendResponseDto(f.getId(), f.getReceiver().getId(), f.getReceiver().getMemberName(), f.getReceiver().getEmail()));
+        Page<FriendResponseDto> friendsDto = friends.map(f -> new FriendResponseDto(f.getId(), f.getReceiver().getId(), f.getReceiver().getUsername(), f.getReceiver().getEmail()));
 
         return new PageResponseDto<>(friendsDto);
     }

@@ -68,7 +68,7 @@ public class FriendController {
         return new ResponseEntity<>(friendService.getFollowings(memberId, name, page, size), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{receiverId}")  // memberId 는 session 으로 변경
+    @DeleteMapping("/{receiverId}")
     public ResponseEntity<String> deleteFriend(
             @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
             @PathVariable Long receiverId
