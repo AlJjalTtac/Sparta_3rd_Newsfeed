@@ -1,7 +1,7 @@
 package com.example.sparta_3rd_newsfeed.friend.service;
 
-import com.example.sparta_3rd_newsfeed.Member;
-import com.example.sparta_3rd_newsfeed.MemberRepository;
+import com.example.sparta_3rd_newsfeed.member.entity.Member;
+import com.example.sparta_3rd_newsfeed.member.repository.MemberRepository;
 import com.example.sparta_3rd_newsfeed.friend.entity.FriendStatus;
 import com.example.sparta_3rd_newsfeed.friend.dto.request.StatusUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.friend.dto.response.FriendResponseDto;
@@ -64,7 +64,7 @@ public class FriendService {
     @Transactional(readOnly = true)
     public PageResponseDto<FriendResponseDto> getPendingRequests(Long memberId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Friend> friends = friendRepository.findPendingRequests(memberId, pageable);
+        Page<Friend> friends = friendRepository.findByReceiverId(memberId, FriendStatus.PENDING, pageable);
 
         Page<FriendResponseDto> friendsDto = friends.map(FriendResponseDto::new);
 
@@ -79,9 +79,9 @@ public class FriendService {
         Page<Friend> friends;
 
         if (name != null && !name.isBlank()) {
-            friends = friendRepository.findByReceiverAndName(receiver.getId(), name, pageable);
+            friends = friendRepository.findByReceiverIdAndName(receiver.getId(), FriendStatus.ACCEPTED, name, pageable);
         } else {
-            friends = friendRepository.findByReceiver(receiver.getId(), pageable);
+            friends = friendRepository.findByReceiverId(receiver.getId(), FriendStatus.ACCEPTED, pageable);
         }
 
         Page<FriendResponseDto> friendsDto = friends.map(f -> new FriendResponseDto(f.getId(), f.getSender().getId(), f.getSender().getMemberName(), f.getSender().getEmail()));
@@ -97,9 +97,9 @@ public class FriendService {
         Page<Friend> friends;
 
         if (name != null && !name.isBlank()) {
-            friends = friendRepository.findBySenderAndName(sender.getId(), name, pageable);
+            friends = friendRepository.findBySenderIdAndName(sender.getId(), FriendStatus.ACCEPTED, name, pageable);
         } else {
-            friends = friendRepository.findBySender(sender.getId(), pageable);
+            friends = friendRepository.findBySenderId(sender.getId(), FriendStatus.ACCEPTED, pageable);
         }
 
         Page<FriendResponseDto> friendsDto = friends.map(f -> new FriendResponseDto(f.getId(), f.getReceiver().getId(), f.getReceiver().getMemberName(), f.getReceiver().getEmail()));
