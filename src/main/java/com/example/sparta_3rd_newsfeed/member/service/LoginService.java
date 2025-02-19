@@ -1,41 +1,40 @@
 package com.example.sparta_3rd_newsfeed.member.service;
 
-import com.example.sparta_3rd_newsfeed.common.entity.Login;
+import com.example.sparta_3rd_newsfeed.common.encoder.PasswordEncoder;
+import com.example.sparta_3rd_newsfeed.member.dto.LoginRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.LoginResponseDto;
+import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.member.repository.LoginRepository;
+import com.example.sparta_3rd_newsfeed.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 @Service
 @RequiredArgsConstructor
 public class LoginService {
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private final LoginRepository loginRepository;
+    public LoginResponseDto login(LoginRequestDto requestDto, HttpServletRequest request) {
+        Member member = memberRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found"));
 
-    public LoginResponseDto login(String email, String password, HttpServletRequest request) {
-        Login login = loginRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found"));
-
-        if (!login.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 
-        HttpSession session = request.getSession(true);
-        session.setAttribute("login", login);
-
-        return new LoginResponseDto(login.getEmail() ,login.getPassword());
-
+        request.getSession(true).setAttribute("member", member);
+        return new LoginResponseDto("Login successful");
     }
 
-    public static LoginResponseDto logout(HttpServletRequest request) {
+    public LoginResponseDto logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-
-        return new LoginResponseDto(null, "Logged out");
+        return new LoginResponseDto("Logged out");
     }
 }
