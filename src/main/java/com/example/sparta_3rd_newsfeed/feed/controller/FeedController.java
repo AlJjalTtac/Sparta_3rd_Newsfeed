@@ -35,7 +35,7 @@ public class FeedController {
 
     // 게시글 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Feed> updateFeed(@PathVariable, Long id, @RequestBody Feed updateFeed) {
+    public ResponseEntity<Feed> updateFeed(@PathVariable Long id, @RequestBody Feed updatedFeed) {
         return ResponseEntity.ok(feedService.updateFeed(id, updatedFeed));
     }
 
