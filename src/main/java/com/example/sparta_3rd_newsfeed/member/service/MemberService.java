@@ -5,6 +5,7 @@ import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequest
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
+import com.example.sparta_3rd_newsfeed.member.dto.responseDto.MemberResponseDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.member.repository.MemberRepository;
@@ -16,7 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,7 +29,23 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    //단건조회를 위한 메서드 추가
+    public Member getMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다."));
+    }
 
+    public List<Member> getMembersByUsername(String username) {
+        // username을 포함한 회원들을 조회
+        List<Member> members = memberRepository.findByUsernameContaining(username);
+
+        if (members.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다.");
+        }
+
+        return members;
+    }
+    //회원수정
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateRequestDto updateRequestDto) {
         // 1. 회원 조회
@@ -49,9 +68,6 @@ public class MemberService {
 
         // 4. 소개글 수정
         if (updateRequestDto.getProfileBio() != null) {
-            if (updateRequestDto.getProfileBio().length() > 30) {
-                throw new IllegalArgumentException("소개글은 30자 이하로 작성해주세요.");
-            }
             member.setProfileBio(updateRequestDto.getProfileBio());
         }
 
