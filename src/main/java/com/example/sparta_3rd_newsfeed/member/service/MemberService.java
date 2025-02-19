@@ -39,16 +39,13 @@ public class MemberService {
         }
 
         // 3. 새 비밀번호 형식 검증 및 변경
-        if ("true".equals(updateRequestDto.getPasswordcheck())) {  // 문자열로 체크
-            if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getPasswordcheck())) {
-                throw new IllegalArgumentException("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
-            }
-
-
-            // 비밀번호 변경
-            String encodedPassword = passwordEncoder.encode(updateRequestDto.getNewPassword());
-            member.setPassword(encodedPassword);
+        if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getPasswordcheck())) {
+            throw new IllegalArgumentException("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
         }
+
+        // 비밀번호 변경
+        String encodedPassword = passwordEncoder.encode(updateRequestDto.getNewPassword());
+        member.setPassword(encodedPassword);
 
         // 4. 소개글 수정
         if (updateRequestDto.getProfileBio() != null) {
