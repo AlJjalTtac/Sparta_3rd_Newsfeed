@@ -4,6 +4,7 @@ package com.example.sparta_3rd_newsfeed.feed.controller;
 import com.example.sparta_3rd_newsfeed.feed.dto.FeedPageResponseDto;
 import com.example.sparta_3rd_newsfeed.feed.dto.FeedDetailDto;
 import com.example.sparta_3rd_newsfeed.feed.dto.FeedRequestDto;
+import com.example.sparta_3rd_newsfeed.feed.dto.FeedResponseDto;
 import com.example.sparta_3rd_newsfeed.feed.service.FeedService;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.example.sparta_3rd_newsfeed.feed.entity.Feed;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,6 +20,14 @@ import org.springframework.web.bind.annotation.*;
 public class FeedController {
 
     private final FeedService feedService;
+
+    // 게시글 생성
+    @PostMapping
+    public ResponseEntity<FeedResponseDto> createFeed(
+            @SessionAttribute(name = "member") Member member,
+            @RequestBody FeedRequestDto request) {
+        return ResponseEntity.ok(feedService.createFeed(request, member));
+    }
 
     // 전체 게시글 조회 (댓글 개수 포함)
     @GetMapping
@@ -38,17 +46,9 @@ public class FeedController {
         return new ResponseEntity<>(feedService.getById(feedId), HttpStatus.OK);
     }
 
-    // 게시글 생성
-    @PostMapping
-    public ResponseEntity<Feed> createFeed(
-            @SessionAttribute(name = "member") Member member,
-            @RequestBody FeedRequestDto request) {
-        return ResponseEntity.ok(feedService.createFeed(request, member));
-    }
-
     // 게시글 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Feed> updateFeed(
+    public ResponseEntity<FeedResponseDto> updateFeed(
             @SessionAttribute(name = "member") Member member,
             @PathVariable Long id,
             @RequestBody FeedRequestDto request) {
