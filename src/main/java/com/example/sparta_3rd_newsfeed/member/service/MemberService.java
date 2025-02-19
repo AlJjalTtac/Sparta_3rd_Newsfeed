@@ -2,8 +2,7 @@ package com.example.sparta_3rd_newsfeed.member.service;
 
 import com.example.sparta_3rd_newsfeed.common.encoder.PasswordEncoder;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.MemberUpdateRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
+import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
@@ -15,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +29,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateRequestDto updateRequestDto) {
         // 1. 회원 조회
@@ -43,9 +41,8 @@ public class MemberService {
         }
 
         // 3. 새 비밀번호 형식 검증 및 변경
-        // 3. 새 비밀번호 형식 검증 및 변경
-        if (updateRequestDto.isPasswordcheck()) {  // passwordcheck가 true일 때 새 비밀번호 확인
-            if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getNewPassword())) {
+        if ("true".equals(updateRequestDto.getPasswordcheck())) {  // 문자열로 체크
+            if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getPasswordcheck())) {
                 throw new IllegalArgumentException("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
             }
 

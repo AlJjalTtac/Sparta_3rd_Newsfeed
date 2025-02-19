@@ -19,13 +19,13 @@
 
 ## 2. API 명세
 
-| **Method** | **Endpoint** | **Description** | **Parameters**                                           | **Request Body**                       | **Response**                                                                                       | **Status Code** |
-|------------|--------------|-----------------|----------------------------------------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|-----------------|
-| `POST`     | `/feed`      | 게시물 생성          | 없음                                                       | `{"title":string, "content": string }` | `{ "id": long, "title":string,"content": string, "createdAt": string, "updatedAt": string }`       | `200 OK`        |
-| `GET`      | `/feed`      | 전체 게시물 조회       | 없음                                                       | 없음                                     | `{ "id": long, "title":string,"content": string,  "createdAt": string, "updatedAt": string, ... }` | `200 OK`        |
-| `GET`      | `/feed/{id}` | 단일 게시물 조회       | **Path:**- `id` (Long)                                   | 없음                                     | `{ "id": long, "title":string,"content": string,  "createdAt": string, "updatedAt": string }`      | `200 OK`        |
-| `PUT`      | `/feed/{id}` | 게시물 수정          | **Path:**- `id` (Long) , **Session:**-`LOGIN_USER`(Long) | `{"title":string, "content": string}`  | `{ "id": long, "title":string,"content": string,  "createdAt": string, "updatedAt": string }`      | `200 OK`        |
-| `DELETE`   | `/feed/{id}` | 게시물 삭제          | **Session:**-`LOGIN_USER`(Long)                          | 없음                                     | `{ "message": "Deleted Successfully" }`                                                            | `200 OK`        |
+| **Method** | **Endpoint** | **Description** | **Parameters**                                           | **Request Body**                       | **Response**                                                                                       | **Status Code**            |
+|------------|--------------|-----------------|----------------------------------------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|----------------------------|
+| `POST`     | `/feed`      | 게시물 생성          | 없음                                                       | `{"title":string, "content": string }` | `{ "id": long, "title":string,"content": string, "createdAt": string, "updatedAt": string }`       | `200 OK`                   |
+| `GET`      | `/feed`      | 전체 게시물 조회       | 없음                                                       | 없음                                     | `{ "id": long, "title":string,"content": string,  "createdAt": string, "updatedAt": string, ... }` | `200 OK`                   |
+| `GET`      | `/feed/{id}` | 단일 게시물 조회       | **Path:**- `id` (Long)                                   | 없음                                     | `{ "id": long, "title":string,"content": string,  "createdAt": string, "updatedAt": string }`      | `200 OK` / `404 Not Found` |
+| `PUT`      | `/feed/{id}` | 게시물 수정          | **Path:**- `id` (Long) , **Session:**-`LOGIN_USER`(Long) | `{"title":string, "content": string}`  | `{ "id": long, "title":string,"content": string,  "createdAt": string, "updatedAt": string }`      | `200 OK` / `404 Not Found` |
+| `DELETE`   | `/feed/{id}` | 게시물 삭제          | **Session:**-`LOGIN_USER`(Long)                          | 없음                                     | `{ "message": "Deleted Successfully" }`                                                            | `200 OK` / `404 Not Found` |
 
 ## 3. 디렉토리 구조
 

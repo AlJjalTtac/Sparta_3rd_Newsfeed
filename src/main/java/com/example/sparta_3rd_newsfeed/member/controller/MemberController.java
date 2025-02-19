@@ -1,17 +1,12 @@
 package com.example.sparta_3rd_newsfeed.member.controller;
 
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.MemberUpdateRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
+import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.responseDto.LoginResponseDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.member.service.MemberService;
-import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
