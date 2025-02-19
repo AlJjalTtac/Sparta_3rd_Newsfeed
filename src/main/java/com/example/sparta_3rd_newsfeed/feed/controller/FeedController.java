@@ -32,7 +32,7 @@ public class FeedController {
 
     // 게시물 단건 조회 시 좋아요 개수와 댓글 목록 포함
     @GetMapping("/{feedId}")
-    public ResponseEntity<FeedDetailDto> getFeedWithLikeCount(
+    public ResponseEntity<FeedDetailDto> getFeedWithDetail(
             @PathVariable Long feedId
     ) {
         return new ResponseEntity<>(feedService.getById(feedId), HttpStatus.OK);
