@@ -2,6 +2,7 @@ package com.example.sparta_3rd_newsfeed.member.service;
 
 import com.example.sparta_3rd_newsfeed.common.encoder.PasswordEncoder;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequestDto;
+import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
@@ -16,9 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 
 @Service
