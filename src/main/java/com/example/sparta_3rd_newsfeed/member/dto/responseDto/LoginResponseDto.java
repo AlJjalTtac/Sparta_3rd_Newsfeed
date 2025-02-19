@@ -1,4 +1,5 @@
-package com.example.sparta_3rd_newsfeed.member.dto;
+/*
+package com.example.sparta_3rd_newsfeed.member.dto.responseDto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,3 +11,4 @@ public class LoginResponseDto {
     private final String message;
 
 }
+*/
