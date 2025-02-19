@@ -41,7 +41,7 @@ public class FriendController {
     @GetMapping("/request/pending")
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getPendingRequests(
             @SessionAttribute(name = "member") Member member,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         PageResponseDto<FriendResponseDto> pendingRequests = friendService.getPendingRequests(member, page, size);
@@ -53,7 +53,7 @@ public class FriendController {
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getFollowers(
             @PathVariable Long memberId,
             @RequestParam(required = false) String name,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return new ResponseEntity<>(friendService.getFollowers(memberId, name, page, size), HttpStatus.OK);
@@ -63,7 +63,7 @@ public class FriendController {
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getFollowings(
             @PathVariable Long memberId,
             @RequestParam(required = false) String name,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return new ResponseEntity<>(friendService.getFollowings(memberId, name, page, size), HttpStatus.OK);

@@ -62,7 +62,8 @@ public class FriendService {
 
     @Transactional(readOnly = true)
     public PageResponseDto<FriendResponseDto> getPendingRequests(Member member, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPage, size);
         Page<Friend> friends = friendRepository.findByReceiverId(member.getId(), FriendStatus.PENDING, pageable);
 
         Page<FriendResponseDto> friendsDto = friends.map(FriendResponseDto::new);
@@ -73,7 +74,8 @@ public class FriendService {
     // 팔로워 목록 (나를 팔로우하는 사람들)
     @Transactional(readOnly = true)
     public PageResponseDto<FriendResponseDto> getFollowers(Long memberId, String name, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPage, size);
         Member receiver = memberRepository.findByIdOrElseThrow(memberId);
         Page<Friend> friends;
 
@@ -91,7 +93,8 @@ public class FriendService {
     // 팔로잉 목록 (내가 팔로우하는 사람들)
     @Transactional(readOnly = true)
     public PageResponseDto<FriendResponseDto> getFollowings(Long memberId, String name, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPage, size);
         Member sender = memberRepository.findByIdOrElseThrow(memberId);
         Page<Friend> friends;
 

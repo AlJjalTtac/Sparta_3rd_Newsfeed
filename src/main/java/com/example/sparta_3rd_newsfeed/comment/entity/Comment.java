@@ -16,6 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "comments")
