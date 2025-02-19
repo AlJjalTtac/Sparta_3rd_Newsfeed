@@ -57,7 +57,7 @@ public class FeedService {
     }
 
     // "U" 특정 게시물 수정
-    public Feed updateFeed(Long id, Feed newFeed, Member member) {
+    public Feed updateFeed(Long id, FeedRequestDto request, Member member) {
         // 1. 미리 생성한 메소드로 수정하고자 하는 게시글 가져오기
         Feed feed = getFeedById(id);                    // JPA: Persistence Context-REAL
         // 2. 가져온 게시글의 제목과 내용을 인자로 받아온 게시물 데이터로 변경
@@ -66,8 +66,8 @@ public class FeedService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 게시물만 수정할 수 있습니다.");
         }
 
-        feed.setTitle(newFeed.getTitle());      // 제목 - JPA: Dirty Checking -> 트렌젝션 종료시 자동 DB 반영
-        feed.setContent(newFeed.getContent());  // 내용 - 위와 동일
+        feed.setTitle(request.getTitle());      // 제목 - JPA: Dirty Checking -> 트렌젝션 종료시 자동 DB 반영
+        feed.setContent(request.getContent());  // 내용 - 위와 동일
         // 3. 변경된 게시글 저장 = 업데이트
         return feed;
     }

@@ -54,8 +54,8 @@ public class FeedController {
     public ResponseEntity<Feed> updateFeed(
             @SessionAttribute(name = "member") Member member,
             @PathVariable Long id,
-            @RequestBody Feed updatedFeed) {
-        return ResponseEntity.ok(feedService.updateFeed(id, updatedFeed, member));
+            @RequestBody FeedRequestDto request) {
+        return ResponseEntity.ok(feedService.updateFeed(id, request, member));
     }
 
     // 게시글 삭제
