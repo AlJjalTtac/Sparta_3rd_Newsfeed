@@ -1,18 +1,30 @@
 package com.example.sparta_3rd_newsfeed.feed.service;
 
-import com.example.sparta_3rd_newsfeed.feed.dto.FeedLikeCountDto;
+import com.example.sparta_3rd_newsfeed.comment.dto.CommentCountDto;
+import com.example.sparta_3rd_newsfeed.comment.dto.CommentSimpleResponseDto;
+import com.example.sparta_3rd_newsfeed.comment.entity.Comment;
+import com.example.sparta_3rd_newsfeed.comment.repository.CommentRepository;
+import com.example.sparta_3rd_newsfeed.feed.dto.FeedDetailDto;
+import com.example.sparta_3rd_newsfeed.feed.dto.FeedPageResponseDto;
 import com.example.sparta_3rd_newsfeed.feed.dto.FeedRequestDto;
 import com.example.sparta_3rd_newsfeed.feed.entity.Feed;
 import com.example.sparta_3rd_newsfeed.feed.repository.FeedRepository;
 import com.example.sparta_3rd_newsfeed.feed.repository.LikeRepository;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service                    // Service Layer
 @RequiredArgsConstructor    // final 붙은 field -> constructor 자동 생성 (Lombok)
@@ -22,30 +34,7 @@ public class FeedService {
 
     private final FeedRepository feedRepository;    // 생성자 자동 생성
     private final LikeRepository likeRepository;
-
-    // "R" 전체 게시물 조회
-    @Transactional(readOnly = true)
-    public List<Feed> getAllFeeds() {
-        // 모든 Feed 리스트를 가져와서 List<Feed> 형태로 반환
-        return feedRepository.findAll();
-    }
-
-    // "R" 단일 게시물 조회
-    @Transactional(readOnly = true)
-    public Feed getFeedById(Long id) {
-        // 인자값을 id로 하여 해당 게시글을 찾고 반환 + 해당 ID의 게시글이 없으면 예외 발생
-        return feedRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("해당 피드가 존재하지 않습니다."));
-    }
-
-    @Transactional(readOnly = true)
-    public FeedLikeCountDto getFeedWithLikeCount(Long feedId) {
-        Feed feed = feedRepository.findByIdOrElseThrow(feedId);
-
-        long likeCount = likeRepository.countByFeed(feed);
-
-        return new FeedLikeCountDto(feed, likeCount);
-    }
+    private final CommentRepository commentRepository;
 
     // "C" 게시물 생성
     @Transactional
@@ -56,10 +45,53 @@ public class FeedService {
         return feedRepository.save(feed);
     }
 
+    // "R" 전체 게시물 조회
+    @Transactional(readOnly = true)
+    public Page<FeedPageResponseDto> getAllFeeds(int page, int size) {
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(Sort.Order.desc("updatedAt")));
+        Page<Feed> feedPage = feedRepository.findAll(pageable);
+        List<Long> feedIds = feedPage.stream()
+                .map(Feed::getId)
+                .collect(Collectors.toList());
+
+        List<CommentCountDto> countResults = commentRepository.countByFeedIds(feedIds);
+        Map<Long, Long> commentCountMap = countResults.stream()
+                .collect(Collectors.toMap(CommentCountDto::getFeedId, CommentCountDto::getCount));
+
+        return feedPage.map(feed -> new FeedPageResponseDto(
+                feed.getId(),
+                feed.getTitle(),
+                feed.getMember().getEmail(),
+                commentCountMap.getOrDefault(feed.getId(), 0L).intValue(),
+                feed.getCreatedAt(),
+                feed.getUpdatedAt()
+        ));
+    }
+
+    @Transactional(readOnly = true)
+    public FeedDetailDto getById(Long feedId) {
+        Feed feed = feedRepository.findByIdOrElseThrow(feedId);
+
+        List<Comment> comments = commentRepository.findByFeed(feed);
+        List<CommentSimpleResponseDto> commentDtos = new ArrayList<>();
+        for (Comment comment : comments) {
+            CommentSimpleResponseDto commentSimpleResponseDto = new CommentSimpleResponseDto(
+                    comment.getId(), comment.getContents()
+            );
+
+            commentDtos.add(commentSimpleResponseDto);
+        }
+        // 좋아요 개수
+        long likeCount = likeRepository.countByFeed(feed);
+
+        return new FeedDetailDto(feed, likeCount, commentDtos);
+    }
+
     // "U" 특정 게시물 수정
     public Feed updateFeed(Long id, FeedRequestDto request, Member member) {
         // 1. 미리 생성한 메소드로 수정하고자 하는 게시글 가져오기
-        Feed feed = getFeedById(id);                    // JPA: Persistence Context-REAL
+        Feed feed = feedRepository.findByIdOrElseThrow(id);                    // JPA: Persistence Context-REAL
         // 2. 가져온 게시글의 제목과 내용을 인자로 받아온 게시물 데이터로 변경
 
         if(!feed.getMember().getEmail().equals(member.getEmail())) {
@@ -75,7 +107,7 @@ public class FeedService {
     // "D" 특정 게시물 삭제
     public void deleteFeed(Long id, Member member) {
         // 1. 미리 생성한 메소드로 삭제하고자 하는 게시글 가져오기
-        Feed feed = getFeedById(id);    // JPA: Persistence Context-REAL
+        Feed feed = feedRepository.findByIdOrElseThrow(id);    // JPA: Persistence Context-REAL
 
         if(!feed.getMember().getEmail().equals(member.getEmail())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 게시물만 삭제할 수 있습니다.");

@@ -1,18 +1,18 @@
 package com.example.sparta_3rd_newsfeed.feed.controller;
 
 
-import com.example.sparta_3rd_newsfeed.feed.dto.FeedLikeCountDto;
+import com.example.sparta_3rd_newsfeed.feed.dto.FeedPageResponseDto;
+import com.example.sparta_3rd_newsfeed.feed.dto.FeedDetailDto;
 import com.example.sparta_3rd_newsfeed.feed.dto.FeedRequestDto;
 import com.example.sparta_3rd_newsfeed.feed.service.FeedService;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.example.sparta_3rd_newsfeed.feed.entity.Feed;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/feeds")
@@ -21,24 +21,21 @@ public class FeedController {
 
     private final FeedService feedService;
 
-    // 전체 게시글 조회
+    // 전체 게시글 조회 (댓글 개수 포함)
     @GetMapping
-    public ResponseEntity<List<Feed>> getAllFeeds() {
-        return ResponseEntity.ok(feedService.getAllFeeds());
+    public ResponseEntity<Page<FeedPageResponseDto>> getAllFeeds(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(feedService.getAllFeeds(page, size));
     }
 
-    // 단일 게시글 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<Feed> getFeedById(@PathVariable Long id) {
-        return ResponseEntity.ok(feedService.getFeedById(id));
-    }
-
-    // 게시물 단건 조회 시 좋아요 개수 포함
+    // 게시물 단건 조회 시 좋아요 개수와 댓글 목록 포함
     @GetMapping("/{feedId}")
-    public ResponseEntity<FeedLikeCountDto> getFeedWithLikeCount(
+    public ResponseEntity<FeedDetailDto> getFeedWithLikeCount(
             @PathVariable Long feedId
     ) {
-        return new ResponseEntity<>(feedService.getFeedWithLikeCount(feedId), HttpStatus.OK);
+        return new ResponseEntity<>(feedService.getById(feedId), HttpStatus.OK);
     }
 
     // 게시글 생성
