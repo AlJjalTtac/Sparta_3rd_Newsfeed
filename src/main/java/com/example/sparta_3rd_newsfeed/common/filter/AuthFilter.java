@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component
 public class AuthFilter implements Filter {
 
-    private static final String[] WHITE_LIST = {"/members/signup", "/auth/login", "/auth/logout", "/members/me"};
+    private static final String[] WHITE_LIST = {"/members/signup", "/auth/login", "/auth/logout"};
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
