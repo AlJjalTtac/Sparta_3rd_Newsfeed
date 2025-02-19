@@ -24,7 +24,7 @@ public class LikeService {
     public String like(Member member, Long feedId) {
         Feed feed = feedRepository.findByIdOrElseThrow(feedId);
 
-        if (feed.getMember().equals(member)) {
+        if (feed.getMember().getId().equals(member.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 게시물에 좋아요를 남길 수 없습니다.");
         }
 
