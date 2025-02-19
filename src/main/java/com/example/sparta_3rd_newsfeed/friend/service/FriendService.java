@@ -27,14 +27,13 @@ public class FriendService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void sendRequest(Long memberId, Long receiverId) {
-        if (memberId.equals(receiverId)) {
+    public void sendRequest(Member member, Long receiverId) {
+        if (member.getId().equals(receiverId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "자기 자신에게 친구 요청을 보낼 수 없습니다.");
         }
-        Member sender = memberRepository.findByIdOrElseThrow(memberId);
         Member receiver = memberRepository.findByIdOrElseThrow(receiverId);
 
-        Optional<Friend> existingFriend = friendRepository.findBySenderAndReceiver(sender, receiver);
+        Optional<Friend> existingFriend = friendRepository.findBySenderAndReceiver(member, receiver);
 
         if(existingFriend.isPresent()) {
             Friend friend = existingFriend.get();
@@ -46,15 +45,15 @@ public class FriendService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 친구 요청을 보냈습니다.");
         }
 
-        Friend friend = new Friend(sender, receiver);
+        Friend friend = new Friend(member, receiver);
         friendRepository.save(friend);
     }
 
     @Transactional
-    public void updateStatus(Long memberId, Long friendId, StatusUpdateRequestDto request) {
+    public void updateStatus(Member member, Long friendId, StatusUpdateRequestDto request) {
         Friend friend = friendRepository.findByIdOrElseThrow(friendId);
 
-        if(!memberId.equals(friend.getReceiver().getId())) {
+        if(!member.getId().equals(friend.getReceiver().getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인의 친구 요청만 수락/거절할 수 있습니다.");
         }
 
@@ -62,9 +61,9 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponseDto<FriendResponseDto> getPendingRequests(Long memberId, int page, int size) {
+    public PageResponseDto<FriendResponseDto> getPendingRequests(Member member, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Friend> friends = friendRepository.findByReceiverId(memberId, FriendStatus.PENDING, pageable);
+        Page<Friend> friends = friendRepository.findByReceiverId(member.getId(), FriendStatus.PENDING, pageable);
 
         Page<FriendResponseDto> friendsDto = friends.map(FriendResponseDto::new);
 
@@ -108,11 +107,10 @@ public class FriendService {
     }
 
     @Transactional
-    public void delete(Long memberId, Long receiverId) {
-        Member sender = memberRepository.findByIdOrElseThrow(memberId);
+    public void delete(Member member, Long receiverId) {
         Member receiver = memberRepository.findByIdOrElseThrow(receiverId);
 
-        Optional<Friend> friend = friendRepository.findBySenderAndReceiver(sender, receiver);
+        Optional<Friend> friend = friendRepository.findBySenderAndReceiver(member, receiver);
         if (friend.isPresent() && friend.get().getStatus() == FriendStatus.ACCEPTED) {
             friendRepository.delete(friend.get());
         } else {
