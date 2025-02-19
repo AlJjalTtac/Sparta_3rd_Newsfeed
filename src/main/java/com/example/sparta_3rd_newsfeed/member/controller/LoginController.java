@@ -21,6 +21,8 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletRequest request) {
+
+
         return ResponseEntity.ok(loginService.login(requestDto, request));
     }
 
