@@ -4,12 +4,11 @@ import com.example.sparta_3rd_newsfeed.feed.entity.Like;
 import com.example.sparta_3rd_newsfeed.feed.repository.FeedRepository;
 import com.example.sparta_3rd_newsfeed.feed.repository.LikeRepository;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
+import com.example.sparta_3rd_newsfeed.feed.entity.Feed;
 import com.example.sparta_3rd_newsfeed.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -22,28 +21,20 @@ public class LikeService {
     private final LikeRepository likeRepository;
 
     @Transactional
-    public void addLike(Long memberId, Long feedId) {
+    public String like(Long memberId, Long feedId) {
         Member member = memberRepository.findByIdOrElseThrow(memberId);
         Feed feed = feedRepository.findByIdOrElseThrow(feedId);
 
         Optional<Like> like = likeRepository.findByMemberAndFeed(member, feed);
 
         if (like.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요를 누른 게시물입니다.");
+            likeRepository.delete(like.get());
+            return "게시물의 좋아요가 취소되었습니다.";
+        } else {
+            Like newLike = new Like(member, feed);
+            likeRepository.save(newLike);
+            return "게시물에 좋아요가 추가되었습니다.";
         }
-
-        Like newLike = new Like(member, feed);
-        likeRepository.save(newLike);
     }
 
-    @Transactional
-    public void deleteLike(Long memberId, Long feedId) {
-        Member member = memberRepository.findByIdOrElseThrow(memberId);
-        Feed feed = feedRepository.findByIdOrElseThrow(feedId);
-
-        Like findLike = likeRepository.findByMemberAndFeed(member, feed)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "좋아요가 존재하지 않습니다."));
-
-        likeRepository.delete(findLike);
-    }
 }

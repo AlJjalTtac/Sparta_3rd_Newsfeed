@@ -13,24 +13,15 @@ public class LikeController {
 
     private final LikeService likeService;
 
+    // 게시물 좋아요 추가 및 삭제
     @PostMapping("/{feedId}/like")
     public ResponseEntity<String> addLike(
             @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
             @PathVariable Long feedId
     ) {
-        likeService.addLike(memberId, feedId);
+        String m = likeService.like(memberId, feedId);
 
-        return new ResponseEntity<>("게시물에 좋아요가 추가되었습니다.", HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{feedId}/like")
-    public ResponseEntity<String> deleteLike(
-            @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
-            @PathVariable Long feedId
-    ) {
-        likeService.deleteLike(memberId, feedId);
-
-        return new ResponseEntity<>("게시물의 좋아요가 취소되었습니다.", HttpStatus.OK);
+        return new ResponseEntity<>(m, HttpStatus.OK);
     }
 
 }
