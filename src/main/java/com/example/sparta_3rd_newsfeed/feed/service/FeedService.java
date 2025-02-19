@@ -11,6 +11,7 @@ import com.example.sparta_3rd_newsfeed.feed.dto.FeedResponseDto;
 import com.example.sparta_3rd_newsfeed.feed.entity.Feed;
 import com.example.sparta_3rd_newsfeed.feed.repository.FeedRepository;
 import com.example.sparta_3rd_newsfeed.feed.repository.LikeRepository;
+import com.example.sparta_3rd_newsfeed.friend.repository.FriendRepository;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -38,6 +39,7 @@ public class FeedService {
     private final FeedRepository feedRepository;    // 생성자 자동 생성
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
+    private final FriendRepository friendRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -58,6 +60,33 @@ public class FeedService {
         int adjustedPage = (page > 0) ? page - 1 : 0;
         Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(Sort.Order.desc("updatedAt")));
         Page<Feed> feedPage = feedRepository.findAll(pageable);
+        List<Long> feedIds = feedPage.stream()
+                .map(Feed::getId)
+                .collect(Collectors.toList());
+
+        List<CommentCountDto> countResults = commentRepository.countByFeedIds(feedIds);
+        Map<Long, Long> commentCountMap = countResults.stream()
+                .collect(Collectors.toMap(CommentCountDto::getFeedId, CommentCountDto::getCount));
+
+        return feedPage.map(feed -> new FeedPageResponseDto(
+                feed.getId(),
+                feed.getTitle(),
+                feed.getMember().getEmail(),
+                commentCountMap.getOrDefault(feed.getId(), 0L).intValue(),
+                feed.getCreatedAt(),
+                feed.getUpdatedAt()
+        ));
+    }
+
+    // 팔로우하는 회원들 피드 조회
+    @Transactional(readOnly = true)
+    public Page<FeedPageResponseDto> getAllFriendFeeds(Long memberId, int page, int size) {
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(Sort.Order.desc("updatedAt")));
+
+        List<Long> followingIds = friendRepository.findFollowingIds(memberId);
+        Page<Feed> feedPage = feedRepository.findByMemberIdIn(followingIds, pageable);
+
         List<Long> feedIds = feedPage.stream()
                 .map(Feed::getId)
                 .collect(Collectors.toList());

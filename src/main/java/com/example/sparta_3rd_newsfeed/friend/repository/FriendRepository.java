@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FriendRepository extends JpaRepository<Friend, Long> {
@@ -35,5 +36,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("SELECT f FROM Friend f JOIN FETCH f.receiver r WHERE f.sender.id = :senderId AND f.status = :status AND r.username LIKE %:name%")
     Page<Friend> findBySenderIdAndName(@Param("senderId") Long senderId, @Param("status") FriendStatus status, @Param("name") String name, Pageable pageable);
 
-
+    @Query("SELECT f.receiver.id FROM Friend f WHERE f.sender.id = :memberId AND f.status = 'ACCEPTED'")
+    List<Long> findFollowingIds(@Param("memberId") Long memberId);
 }

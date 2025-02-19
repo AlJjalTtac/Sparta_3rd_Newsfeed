@@ -38,6 +38,16 @@ public class FeedController {
         return ResponseEntity.ok(feedService.getAllFeeds(page, size));
     }
 
+    // 팔로우하는 회원 피드 목록 조회
+    @GetMapping("/following")
+    public ResponseEntity<Page<FeedPageResponseDto>> getFriendFeeds(
+            @SessionAttribute(name = "member") Member member,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(feedService.getAllFriendFeeds(member.getId(), page, size));
+    }
+
     // 게시물 단건 조회 시 좋아요 개수와 댓글 목록 포함
     @GetMapping("/{feedId}")
     public ResponseEntity<FeedDetailDto> getFeedWithDetail(
