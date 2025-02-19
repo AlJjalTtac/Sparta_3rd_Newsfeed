@@ -96,6 +96,7 @@ public class FeedService {
     }
 
     // "U" 특정 게시물 수정
+    @Transactional
     public FeedResponseDto updateFeed(Long id, FeedRequestDto request, Member member) {
         // 1. 미리 생성한 메소드로 수정하고자 하는 게시글 가져오기
         Feed feed = feedRepository.findByIdOrElseThrow(id);                    // JPA: Persistence Context-REAL
@@ -114,6 +115,7 @@ public class FeedService {
     }
 
     // "D" 특정 게시물 삭제
+    @Transactional
     public void deleteFeed(Long id, Member member) {
         // 1. 미리 생성한 메소드로 삭제하고자 하는 게시글 가져오기
         Feed feed = feedRepository.findByIdOrElseThrow(id);    // JPA: Persistence Context-REAL
