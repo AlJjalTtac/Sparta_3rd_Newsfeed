@@ -5,7 +5,6 @@ import com.example.sparta_3rd_newsfeed.feed.repository.FeedRepository;
 import com.example.sparta_3rd_newsfeed.feed.repository.LikeRepository;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.feed.entity.Feed;
-import com.example.sparta_3rd_newsfeed.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,13 +15,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LikeService {
 
-    private final MemberRepository memberRepository;
     private final FeedRepository feedRepository;
     private final LikeRepository likeRepository;
 
     @Transactional
-    public String like(Long memberId, Long feedId) {
-        Member member = memberRepository.findByIdOrElseThrow(memberId);
+    public String like(Member member, Long feedId) {
         Feed feed = feedRepository.findByIdOrElseThrow(feedId);
 
         Optional<Like> like = likeRepository.findByMemberAndFeed(member, feed);

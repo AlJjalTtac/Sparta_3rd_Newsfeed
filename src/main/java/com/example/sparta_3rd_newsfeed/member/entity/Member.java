@@ -1,9 +1,15 @@
 package com.example.sparta_3rd_newsfeed.member.entity;
 
-import com.example.sparta_3rd_newsfeed.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.*;
+import com.example.sparta_3rd_newsfeed.common.entity.BaseEntity;
 import java.time.LocalDateTime;
 
 @Getter
@@ -11,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,4 +44,5 @@ public class Member extends BaseEntity {
     private LocalDateTime deletedAt;
 
     public Member() {}
+
 }

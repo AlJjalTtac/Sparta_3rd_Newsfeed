@@ -1,5 +1,6 @@
 package com.example.sparta_3rd_newsfeed.feed.dto;
 
+import com.example.sparta_3rd_newsfeed.feed.entity.Feed;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

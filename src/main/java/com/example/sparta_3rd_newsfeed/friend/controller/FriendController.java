@@ -18,7 +18,7 @@ public class FriendController {
 
     @PostMapping("/request")
     public ResponseEntity<String> sendRequest(
-            @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
+            @SessionAttribute(name = "member") Long memberId,
             @RequestParam Long receiverId
     ) {
         friendService.sendRequest(memberId, receiverId);
@@ -28,7 +28,7 @@ public class FriendController {
 
     @PutMapping("/request/{friendId}")
     public ResponseEntity<String> updateStatus(
-            @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
+            @SessionAttribute(name = "member") Long memberId,
             @PathVariable Long friendId,
             @RequestBody StatusUpdateRequestDto request
     ) {
@@ -39,7 +39,7 @@ public class FriendController {
 
     @GetMapping("/request/pending")
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getPendingRequests(
-            @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
+            @SessionAttribute(name = "member") Long memberId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {

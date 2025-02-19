@@ -1,8 +1,14 @@
 package com.example.sparta_3rd_newsfeed.friend.repository;
 
+<<<<<<< HEAD
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.friend.entity.Friend;
 import com.example.sparta_3rd_newsfeed.friend.entity.FriendStatus;
+=======
+
+import com.example.sparta_3rd_newsfeed.friend.entity.Friend;
+import com.example.sparta_3rd_newsfeed.member.entity.Member;
+>>>>>>> 099562f35ed74e89633fd8277c10dc8befbda898
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
