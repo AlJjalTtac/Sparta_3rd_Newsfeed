@@ -1,7 +1,7 @@
 package com.example.sparta_3rd_newsfeed.friend.entity;
 
-import com.example.sparta_3rd_newsfeed.Member;
 import com.example.sparta_3rd_newsfeed.common.entity.BaseEntity;
+import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ public class Friend extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
-    private Member sender;
+    private com.example.sparta_3rd_newsfeed.member.entity.Member sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)

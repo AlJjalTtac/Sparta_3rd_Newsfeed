@@ -1,4 +1,4 @@
-package com.example.sparta_3rd_newsfeed.member.dto;
+package com.example.sparta_3rd_newsfeed.member.dto.requestDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -19,7 +19,7 @@ public class MemberUpdateRequestDto {
     private String newPassword;  // 새 비밀번호
 
     @NotBlank(message = "새 비밀번호를 확인해주세요.")
-    private boolean passwordcheck;  // 새 비밀번호 확인
+    private String passwordcheck;  // 새 비밀번호 확인
 
     private String profileImg;  // 프로필 이미지 URL
     @Size(max = 30, message = "소개글은 30자 이내로 작성해주세요.")
