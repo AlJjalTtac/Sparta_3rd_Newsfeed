@@ -1,7 +1,10 @@
 package com.example.sparta_3rd_newsfeed.feed.dto;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class FeedPageResponseDto {
     private final Long id;
     private final String title;

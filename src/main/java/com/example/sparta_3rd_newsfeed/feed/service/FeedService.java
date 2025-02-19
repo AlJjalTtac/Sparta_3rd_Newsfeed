@@ -152,7 +152,9 @@ public class FeedService {
         if(!feed.getMember().getEmail().equals(member.getEmail())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 게시물만 삭제할 수 있습니다.");
         }
+        commentRepository.deleteAllByFeedId(id);  // 댓글 삭제
+        likeRepository.deleteAllByFeedId(id);  // 좋아요 삭제
 
-        feedRepository.delete(feed);    // 삭제
+        feedRepository.delete(feed);    // 게시물 삭제
     }
 }
