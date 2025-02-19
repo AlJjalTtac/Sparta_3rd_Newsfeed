@@ -1,11 +1,8 @@
 package com.example.sparta_3rd_newsfeed.member.service;
 
 import com.example.sparta_3rd_newsfeed.common.encoder.PasswordEncoder;
-import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.responseDto.MemberResponseDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.member.repository.MemberRepository;
@@ -19,7 +16,6 @@ import java.time.LocalDateTime;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -29,6 +25,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
     //단건조회를 위한 메서드 추가
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
@@ -45,6 +42,7 @@ public class MemberService {
 
         return members;
     }
+
     //회원수정
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateRequestDto updateRequestDto) {
@@ -89,39 +87,35 @@ public class MemberService {
         if (existingMember.isPresent()) {
             Member member = existingMember.get();
 
-            // 탈퇴한 계정이지만 탈퇴한 지 1달이 지나지 않은 계정일 경우
-            if(member.isDeleted() && member.getDeletedAt() != null){
+            if (member.isDeleted() && member.getDeletedAt() != null) {
                 LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
-                if(member.getDeletedAt().isAfter(oneMonthAgo)){
+
+                // 탈퇴한 계정이지만 탈퇴한 지 1달이 지나지 않은 계정일 경우
+                if (member.getDeletedAt().isAfter(oneMonthAgo) &&
+                        member.getPhoneNumber().equals(signUpRequestDto.getPhoneNumber())) {
+
                     member.setDeleted(false);
                     member.setDeletedAt(null);
                     member.setUsername(signUpRequestDto.getUsername());
+                    member.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
 
-                    if(signUpRequestDto.getProfileImg() != null){
+                    if (signUpRequestDto.getProfileImg() != null) {
                         member.setProfileImg(signUpRequestDto.getProfileImg());
                     }
-
-                    if(signUpRequestDto.getProfileBio() != null){
+                    if (signUpRequestDto.getProfileBio() != null) {
                         member.setProfileBio(signUpRequestDto.getProfileBio());
                     }
 
-                    member.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
-
                     memberRepository.save(member);
-                    return new SignUpResponseDto(member.getUsername(),member.getEmail());
-                }else{
-
-                    // 1달이 지났으면 계정 완전히 삭제 후 신규가입
+                    return new SignUpResponseDto(member.getUsername(), member.getEmail());
+                } else {
+                    // 전화번호가 다르거나, 1달이 지났다면 기존 계정 삭제 후 새 계정 생성
                     memberRepository.delete(member);
                 }
-            }else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일 입니다.");
+            } else {
+                // 기존 계정이 삭제된 상태가 아니라면 중복 이메일 예외 발생
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 사용 중인 이메일입니다.");
             }
-        }
-
-        // 비밀번호 유효성 검사
-        if (!signUpRequestDto.getPassword().matches("(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호는 8~16자 영문 대소문자, 숫자, 특수문자를 포함해야 합니다.");
         }
 
         // 신규 회원가입 처리
@@ -129,6 +123,7 @@ public class MemberService {
         member.setUsername(signUpRequestDto.getUsername());
         member.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
         member.setEmail(signUpRequestDto.getEmail());
+        member.setPhoneNumber(signUpRequestDto.getPhoneNumber());
         member.setProfileImg(signUpRequestDto.getProfileImg());
         member.setProfileBio(signUpRequestDto.getProfileBio());
 
@@ -138,39 +133,20 @@ public class MemberService {
     }
 
 
-//    public Member login(LoginRequestDto loginRequestDto) {
-//        Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다."));
-//
-//        // 탈퇴한 계정인지 확인
-//        if (member.isDeleted()) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이미 탈퇴한 계정입니다. 다시 가입해주세요.");
-//        }
-//
-//        // 비밀번호 일치 여부 확인
-//        if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        return member;
-//    }
+    public void deleteMember(Member loggedInMember) {
+        // 회원 정보 조회
+        Member member = memberRepository.findByEmail(loggedInMember.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "이메일이 존재하지 않습니다."));
 
-
-    public void deleteMember(DeleteMemberRequestDto requestDto) {
-        Member member = memberRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"이메일이나 비밀번호가 일치하지 않습니다."));
-
-        if(member.isDeleted()){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"이메일이나 비밀번호가 일치하지 않습니다.");
+        // 이미 탈퇴한 계정인지 확인
+        if (member.isDeleted()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 탈퇴한 계정입니다.");
         }
 
-        // 비밀번호 일치 여부 확인
-        if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다.");
-        }
-
+        // 탈퇴 처리 (isDeleted 필드 변경)
         member.setDeleted(true);
         member.setDeletedAt(LocalDateTime.now());
         memberRepository.save(member);
     }
+
 }

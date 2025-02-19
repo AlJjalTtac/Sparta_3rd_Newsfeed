@@ -1,15 +1,9 @@
 package com.example.sparta_3rd_newsfeed.member.controller;
 
-import com.example.sparta_3rd_newsfeed.feed.entity.Like;
-import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.responseDto.LoginResponseDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.MemberResponseDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -76,7 +70,7 @@ public class MemberController {
     public ResponseEntity<Member> updateProfile(
             @SessionAttribute(name = "member") Member member,  // 로그인된 사용자
             @RequestBody @Valid MemberUpdateRequestDto updateRequestDto  // @Valid 추가
-            ) {
+    ) {
         //유효성 검사 오류 발생 확인
         Member updatedMember = memberService.updateMember(member.getId(), updateRequestDto);
         return ResponseEntity.ok(updatedMember);
@@ -100,12 +94,9 @@ public class MemberController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMember(
-            @RequestBody DeleteMemberRequestDto requestDto
-    ) {
-
-        memberService.deleteMember(requestDto);
+    public ResponseEntity<String> deleteMember(@SessionAttribute(name = "member") Member member) {
+        memberService.deleteMember(member);
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
-}
 
+}
