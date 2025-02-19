@@ -3,14 +3,20 @@ package com.example.sparta_3rd_newsfeed.common.filter;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PatternMatchUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
 @Slf4j
 @Component
 public class AuthFilter implements Filter {
+
+    private static final String[] WHITE_LIST = {"/members/signup", "/auth/login", "/auth/logout", "/members/me"};
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -22,30 +28,22 @@ public class AuthFilter implements Filter {
         // 회원가입 및 로그인 요청은 필터에서 제외
         String requestURI = httpRequest.getRequestURI();
 
-        if (requestURI.startsWith("/swagger-ui") ||
-                requestURI.startsWith("/v3/api-docs") ||
-                requestURI.startsWith("/swagger-resources") ||
-                requestURI.startsWith("/webjars") ||
-                requestURI.equals("/swagger-ui.html")) {
-            chain.doFilter(request, response);
-            return;
-        }
+        log.info("로그인 필터 로직 실행");
 
-        if (requestURI.startsWith("/members/signup") || requestURI.startsWith("/members/login")) {
-            chain.doFilter(request, response);
-            return;
-        }
+        if (!isWhiteList(requestURI)) {
+            HttpSession session = httpRequest.getSession(false);
 
+            if (session == null || session.getAttribute("member") == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            }
 
-        // 세션에서 사용자 ID 가져오기
-        Object user = httpRequest.getSession().getAttribute("member");
-
-        if (user == null) {
-            log.warn("Unauthorized access attempt to {}", requestURI);
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인이 필요합니다.");
-            return;
+            log.info("로그인에 성공했습니다.");
         }
 
         chain.doFilter(request, response);
+    }
+
+    private boolean isWhiteList(String requestURI) {
+        return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);
     }
 }

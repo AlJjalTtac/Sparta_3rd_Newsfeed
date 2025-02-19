@@ -125,22 +125,22 @@ public class MemberService {
     }
 
 
-    public Member login(LoginRequestDto loginRequestDto) {
-        Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다."));
-
-        // 탈퇴한 계정인지 확인
-        if (member.isDeleted()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이미 탈퇴한 계정입니다. 다시 가입해주세요.");
-        }
-
-        // 비밀번호 일치 여부 확인
-        if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다.");
-        }
-
-        return member;
-    }
+//    public Member login(LoginRequestDto loginRequestDto) {
+//        Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다."));
+//
+//        // 탈퇴한 계정인지 확인
+//        if (member.isDeleted()) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이미 탈퇴한 계정입니다. 다시 가입해주세요.");
+//        }
+//
+//        // 비밀번호 일치 여부 확인
+//        if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        return member;
+//    }
 
 
     public void deleteMember(DeleteMemberRequestDto requestDto) {

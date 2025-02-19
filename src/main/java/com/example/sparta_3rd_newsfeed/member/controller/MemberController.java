@@ -8,7 +8,6 @@ import com.example.sparta_3rd_newsfeed.member.dto.responseDto.LoginResponseDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -31,7 +30,7 @@ public class MemberController {
     // 내 정보 수정
     @PutMapping("/me")
     public ResponseEntity<Member> updateProfile(
-            @AuthenticationPrincipal Long loginUserId,  // 로그인된 사용자의 ID
+            @SessionAttribute(name = "member") Member member,  // 로그인된 사용자
             @RequestBody @Valid MemberUpdateRequestDto updateRequestDto,  // @Valid 추가
             BindingResult bindingResult) {  // 유효성 검사 결과
         //유효성 검사 오류 발생 확인
@@ -39,7 +38,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body(null); //잘못된 요청시 400상태코드 반환
         }
 
-        Member updatedMember = memberService.updateMember(loginUserId, updateRequestDto);
+        Member updatedMember = memberService.updateMember(member.getId(), updateRequestDto);
         return ResponseEntity.ok(updatedMember);
     }
 
@@ -60,17 +59,17 @@ public class MemberController {
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(
-            @RequestBody LoginRequestDto loginRequestDto,
-            HttpServletRequest request) {
-
-        Member member = memberService.login(loginRequestDto);
-
-        HttpSession session = request.getSession();
-        session.setAttribute("member", member);
-        return new ResponseEntity<>(new LoginResponseDto("로그인 성공"), HttpStatus.OK);
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<LoginResponseDto> login(
+//            @RequestBody LoginRequestDto loginRequestDto,
+//            HttpServletRequest request) {
+//
+//        Member member = memberService.login(loginRequestDto);
+//
+//        HttpSession session = request.getSession();
+//        session.setAttribute("member", member);
+//        return new ResponseEntity<>(new LoginResponseDto("로그인 성공"), HttpStatus.OK);
+//    }
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteMember(

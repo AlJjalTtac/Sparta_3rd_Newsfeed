@@ -24,10 +24,10 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     Optional<Friend> findBySenderAndReceiver(Member sender, Member receiver);
 
     @Query("SELECT f FROM Friend f JOIN FETCH f.sender WHERE f.receiver.id = :receiverId AND f.status = :status")
-    Page<Friend> findByReceiverId(@Param("receiverID") Long receiverId, @Param("status") FriendStatus status, Pageable pageable);
+    Page<Friend> findByReceiverId(@Param("receiverId") Long receiverId, @Param("status") FriendStatus status, Pageable pageable);
 
     @Query("SELECT f FROM Friend f JOIN FETCH f.sender s WHERE f.receiver.id = :receiverId AND f.status = :status AND s.username LIKE %:name%")
-    Page<Friend> findByReceiverIdAndName(@Param("receiverID") Long receiverId, @Param("status") FriendStatus status, @Param("name") String name, Pageable pageable);
+    Page<Friend> findByReceiverIdAndName(@Param("receiverId") Long receiverId, @Param("status") FriendStatus status, @Param("name") String name, Pageable pageable);
 
     @Query("SELECT f FROM Friend f JOIN FETCH f.receiver WHERE f.sender.id = :senderId AND f.status = :status")
     Page<Friend> findBySenderId(@Param("senderId") Long senderId, @Param("status") FriendStatus status, Pageable pageable);
