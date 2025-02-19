@@ -1,9 +1,0 @@
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    path: /swagger-ui.html
-    operationsSorter: method
-    disable-s6wagger-default-url: true
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json

@@ -11,5 +11,4 @@ public class Sparta3rdNewsfeedApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(Sparta3rdNewsfeedApplication.class, args);
 	}
-
 }
