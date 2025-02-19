@@ -1,12 +1,19 @@
 package com.example.sparta_3rd_newsfeed.friend.repository;
 
+<<<<<<< HEAD
+import com.example.sparta_3rd_newsfeed.member.entity.Member;
+import com.example.sparta_3rd_newsfeed.friend.entity.Friend;
+import com.example.sparta_3rd_newsfeed.friend.entity.FriendStatus;
+=======
 
 import com.example.sparta_3rd_newsfeed.friend.entity.Friend;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
+>>>>>>> 099562f35ed74e89633fd8277c10dc8befbda898
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,19 +26,16 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     }
     Optional<Friend> findBySenderAndReceiver(Member sender, Member receiver);
 
-    @Query("SELECT f FROM Friend f JOIN FETCH f.sender JOIN FETCH f.receiver WHERE f.receiver.id = :receiverId AND f.status = 'ACCEPTED'")
-    Page<Friend> findByReceiver(Long receiverId, Pageable pageable);
+    @Query("SELECT f FROM Friend f JOIN FETCH f.sender WHERE f.receiver.id = :receiverId AND f.status = :status")
+    Page<Friend> findByReceiverId(@Param("receiverID") Long receiverId, @Param("status") FriendStatus status, Pageable pageable);
 
-    @Query("SELECT f FROM Friend f JOIN FETCH f.sender JOIN FETCH f.receiver WHERE f.receiver.id = :receiverId AND f.status = 'ACCEPTED' AND f.sender.memberName LIKE %:name%")
-    Page<Friend> findByReceiverAndName(Long receiverId, String name, Pageable pageable);
+    @Query("SELECT f FROM Friend f JOIN FETCH f.sender s WHERE f.receiver.id = :receiverId AND f.status = :status AND s.username LIKE %:name%")
+    Page<Friend> findByReceiverIdAndName(@Param("receiverID") Long receiverId, @Param("status") FriendStatus status, @Param("name") String name, Pageable pageable);
 
-    @Query("SELECT f FROM Friend f JOIN FETCH f.sender JOIN FETCH f.receiver WHERE f.sender.id = :senderId AND f.status = 'ACCEPTED'")
-    Page<Friend> findBySender(Long senderId, Pageable pageable);
+    @Query("SELECT f FROM Friend f JOIN FETCH f.receiver WHERE f.sender.id = :senderId AND f.status = :status")
+    Page<Friend> findBySenderId(@Param("senderId") Long senderId, @Param("status") FriendStatus status, Pageable pageable);
 
-    @Query("SELECT f FROM Friend f JOIN FETCH f.sender JOIN FETCH f.receiver WHERE f.sender.id = :senderId AND f.status = 'ACCEPTED' AND f.receiver.memberName LIKE %:name%")
-    Page<Friend> findBySenderAndName(Long senderId, String name, Pageable pageable);
-
-    @Query("SELECT f FROM Friend f JOIN FETCH f.sender JOIN FETCH f.receiver WHERE f.receiver.id = :memberId AND f.status = 'PENDING'")
-    Page<Friend> findPendingRequests(Long memberId, Pageable pageable);
+    @Query("SELECT f FROM Friend f JOIN FETCH f.receiver r WHERE f.sender.id = :senderId AND f.status = :status AND r.username LIKE %:name%")
+    Page<Friend> findBySenderIdAndName(@Param("senderId") Long senderId, @Param("status") FriendStatus status, @Param("name") String name, Pageable pageable);
 
 }

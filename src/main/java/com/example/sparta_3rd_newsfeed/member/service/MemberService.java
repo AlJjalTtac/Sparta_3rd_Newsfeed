@@ -3,7 +3,6 @@ package com.example.sparta_3rd_newsfeed.member.service;
 import com.example.sparta_3rd_newsfeed.common.encoder.PasswordEncoder;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;

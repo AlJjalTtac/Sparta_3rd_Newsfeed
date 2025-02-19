@@ -18,7 +18,7 @@ public class FriendController {
 
     @PostMapping("/request")
     public ResponseEntity<String> sendRequest(
-            @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
+            @SessionAttribute(name = "member") Long memberId,
             @RequestParam Long receiverId
     ) {
         friendService.sendRequest(memberId, receiverId);
@@ -28,7 +28,7 @@ public class FriendController {
 
     @PutMapping("/request/{friendId}")
     public ResponseEntity<String> updateStatus(
-            @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
+            @SessionAttribute(name = "member") Long memberId,
             @PathVariable Long friendId,
             @RequestBody StatusUpdateRequestDto request
     ) {
@@ -39,7 +39,7 @@ public class FriendController {
 
     @GetMapping("/request/pending")
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getPendingRequests(
-            @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
+            @SessionAttribute(name = "member") Long memberId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -48,9 +48,9 @@ public class FriendController {
         return new ResponseEntity<>(pendingRequests, HttpStatus.OK);
     }
 
-    @GetMapping("/followers")
+    @GetMapping("/{memberId}/followers")
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getFollowers(
-            @RequestParam Long memberId,
+            @PathVariable Long memberId,
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -58,9 +58,9 @@ public class FriendController {
         return new ResponseEntity<>(friendService.getFollowers(memberId, name, page, size), HttpStatus.OK);
     }
 
-    @GetMapping("/followings")
+    @GetMapping("/{memberId}/followings")
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getFollowings(
-            @RequestParam Long memberId,
+            @PathVariable Long memberId,
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -68,7 +68,7 @@ public class FriendController {
         return new ResponseEntity<>(friendService.getFollowings(memberId, name, page, size), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{receiverId}")  // memberId 는 session 으로 변경
+    @DeleteMapping("/{receiverId}")
     public ResponseEntity<String> deleteFriend(
             @SessionAttribute(name = "LOGIN_MEMBER") Long memberId,
             @PathVariable Long receiverId

@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
-    
-     Optional<Member> findByEmailAndIsDeletedFalse(String email);
+
+    Optional<Member> findByEmailAndIsDeletedFalse(String email);
 
     // findByIdOrElseThrow 메서드 추가
     default Member findByIdOrElseThrow(Long id) {
