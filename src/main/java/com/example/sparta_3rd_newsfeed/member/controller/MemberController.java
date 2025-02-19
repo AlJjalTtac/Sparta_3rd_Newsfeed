@@ -29,12 +29,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-
-    @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
     // 내 정보 수정
     @PutMapping("/me")
     public ResponseEntity<Member> updateProfile(
@@ -51,22 +45,22 @@ public class MemberController {
     }
 }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(
-            @Valid @RequestBody SignUpRequestDto signUpRequestDto,
-            BindingResult bindingResult
-            ){
+@PostMapping("/signup")
+public ResponseEntity<?> signup(
+        @Valid @RequestBody SignUpRequestDto signUpRequestDto,
+        BindingResult bindingResult
+){
 
-        if(bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getFieldErrors()
-                    .stream()
-                    .map(error -> error.getField() + " : " + error.getDefaultMessage()) // 필드명과 메시지 함께 반환
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errorMessages);
-        }
-        SignUpResponseDto signUpResponseDto = memberService.signUp(signUpRequestDto);
-        return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
+    if(bindingResult.hasErrors()) {
+        List<String> errorMessages = bindingResult.getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + " : " + error.getDefaultMessage()) // 필드명과 메시지 함께 반환
+                .collect(Collectors.toList());
+        return ResponseEntity.badRequest().body(errorMessages);
     }
+    SignUpResponseDto signUpResponseDto = memberService.signUp(signUpRequestDto);
+    return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
+}
 
 //    @PostMapping("/login")
 //    public ResponseEntity<LoginResponseDto> login(
@@ -80,12 +74,12 @@ public class MemberController {
 //        return new ResponseEntity<>(new LoginResponseDto("로그인 성공"), HttpStatus.OK);
 //    }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMember(
-            @RequestBody DeleteMemberRequestDto requestDto
-            ){
+@DeleteMapping("/delete")
+public ResponseEntity<String> deleteMember(
+        @RequestBody DeleteMemberRequestDto requestDto
+){
 
-        memberService.deleteMember(requestDto);
-        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
-    }
+    memberService.deleteMember(requestDto);
+    return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+}
 }

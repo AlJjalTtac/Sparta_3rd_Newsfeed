@@ -12,10 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
 
 import java.util.regex.Matcher;
@@ -30,13 +27,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    
-    @Autowired
-    public MemberService(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
-        
-    }
+
 
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateRequestDto updateRequestDto) {
@@ -131,16 +122,16 @@ public class MemberService {
     }
 
 
-//    public Member login(LoginRequestDto loginRequestDto) {
-//        Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다."));
-//
-//        if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        return member;
-//    }
+    public Member login(LoginRequestDto loginRequestDto) {
+        Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다."));
+
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일이나 비밀번호가 일치하지 않습니다.");
+        }
+
+        return member;
+    }
 
 
     public void deleteMember(DeleteMemberRequestDto requestDto) {
