@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @AllArgsConstructor
-
+@NoArgsConstructor
 public class Member extends BaseEntity {
 
     @Id
@@ -43,7 +43,5 @@ public class Member extends BaseEntity {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
-
-    public Member() {}
 
 }
