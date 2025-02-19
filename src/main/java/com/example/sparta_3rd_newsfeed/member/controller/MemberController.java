@@ -1,7 +1,7 @@
 package com.example.sparta_3rd_newsfeed.member.controller;
 
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.MemberUpdateRequestDto;
+import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.LoginResponseDto;
@@ -10,8 +10,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.example.sparta_3rd_newsfeed.member.entity.Member;
 import com.example.sparta_3rd_newsfeed.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,11 +28,6 @@ public class MemberController {
     private final MemberService memberService;
 
 
-    @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
     // 내 정보 수정
     @PutMapping("/me")
     public ResponseEntity<Member> updateProfile(
@@ -49,7 +42,7 @@ public class MemberController {
         Member updatedMember = memberService.updateMember(loginUserId, updateRequestDto);
         return ResponseEntity.ok(updatedMember);
     }
-}
+
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(

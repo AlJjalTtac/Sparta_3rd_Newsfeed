@@ -1,13 +1,14 @@
 package com.example.sparta_3rd_newsfeed.friend.service;
 
-import com.example.sparta_3rd_newsfeed.Member;
-import com.example.sparta_3rd_newsfeed.MemberRepository;
+
 import com.example.sparta_3rd_newsfeed.friend.entity.FriendStatus;
 import com.example.sparta_3rd_newsfeed.friend.dto.request.StatusUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.friend.dto.response.FriendResponseDto;
 import com.example.sparta_3rd_newsfeed.friend.dto.response.PageResponseDto;
 import com.example.sparta_3rd_newsfeed.friend.entity.Friend;
 import com.example.sparta_3rd_newsfeed.friend.repository.FriendRepository;
+import com.example.sparta_3rd_newsfeed.member.entity.Member;
+import com.example.sparta_3rd_newsfeed.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

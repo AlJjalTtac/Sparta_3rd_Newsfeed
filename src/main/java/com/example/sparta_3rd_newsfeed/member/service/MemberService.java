@@ -2,7 +2,7 @@ package com.example.sparta_3rd_newsfeed.member.service;
 
 import com.example.sparta_3rd_newsfeed.common.encoder.PasswordEncoder;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.DeleteMemberRequestDto;
-import com.example.sparta_3rd_newsfeed.member.dto.MemberUpdateRequestDto;
+import com.example.sparta_3rd_newsfeed.member.dto.requestDto.MemberUpdateRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.LoginRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.requestDto.SignUpRequestDto;
 import com.example.sparta_3rd_newsfeed.member.dto.responseDto.SignUpResponseDto;
@@ -12,10 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
 
 import java.util.regex.Matcher;
@@ -30,13 +27,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    
-    @Autowired
-    public MemberService(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
-        
-    }
 
     @Transactional
     public Member updateMember(Long memberId, MemberUpdateRequestDto updateRequestDto) {
@@ -50,9 +40,8 @@ public class MemberService {
         }
 
         // 3. 새 비밀번호 형식 검증 및 변경
-        // 3. 새 비밀번호 형식 검증 및 변경
-        if (updateRequestDto.isPasswordcheck()) {  // passwordcheck가 true일 때 새 비밀번호 확인
-            if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getNewPassword())) {
+        if ("true".equals(updateRequestDto.getPasswordcheck())) {  // 문자열로 체크
+            if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getPasswordcheck())) {
                 throw new IllegalArgumentException("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
             }
 
@@ -80,7 +69,7 @@ public class MemberService {
 
         // 5. 프로필 이미지 수정
         if (updateRequestDto.getProfileImg() != null) {
-            member.setProfileImgId(updateRequestDto.getProfileImg());
+            member.setProfileImg(updateRequestDto.getProfileImg());
         }
 
         // 6. 수정된 회원 저장

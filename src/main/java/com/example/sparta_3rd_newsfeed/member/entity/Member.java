@@ -21,17 +21,12 @@ import java.util.List;
 @Setter
 @Entity
 @AllArgsConstructor
-
-public class Member extends BaseEntity implements UserDetails {
+public class Member extends BaseEntity implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-  
-    private String email;
-    private String password;
-    private String profileBio;
-    private String profileImgId;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -85,4 +80,5 @@ public class Member extends BaseEntity implements UserDetails {
     private LocalDateTime deletedAt;
 
     public Member() {}
+
 }
