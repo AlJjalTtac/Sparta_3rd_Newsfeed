@@ -63,7 +63,7 @@ public class FriendController {
     public ResponseEntity<PageResponseDto<FriendResponseDto>> getFollowings(
             @PathVariable Long memberId,
             @RequestParam(required = false) String name,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return new ResponseEntity<>(friendService.getFollowings(memberId, name, page, size), HttpStatus.OK);
