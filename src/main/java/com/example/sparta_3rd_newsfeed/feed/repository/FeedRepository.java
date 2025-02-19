@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.sparta_3rd_newsfeed.feed.entity.Feed;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,7 +19,9 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
         return findById(feedId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시물이 존재하지 않습니다."));
     }
 
-    Page<Feed> findByMemberIdIn(List<Long> memberIds, Pageable pageable);
+    @Query("SELECT f FROM Feed f JOIN FETCH f.member WHERE f.member.id IN :memberIds")
+    Page<Feed> findByMemberIdIn(@Param("memberIds") List<Long> memberIds, Pageable pageable);
+
 
 }
 
