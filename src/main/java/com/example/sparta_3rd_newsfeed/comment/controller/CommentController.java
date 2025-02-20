@@ -1,7 +1,6 @@
 package com.example.sparta_3rd_newsfeed.comment.controller;
 
 import com.example.sparta_3rd_newsfeed.comment.dto.requestDto.CommentRequestDto;
-import com.example.sparta_3rd_newsfeed.comment.dto.responseDto.CommentResponseDto;
 import com.example.sparta_3rd_newsfeed.comment.dto.responseDto.ResponseIdDto;
 import com.example.sparta_3rd_newsfeed.comment.dto.responseDto.SummarizedCommentResponseDto;
 import com.example.sparta_3rd_newsfeed.comment.service.CommentService;

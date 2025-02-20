@@ -1,8 +1,6 @@
 package com.example.sparta_3rd_newsfeed.comment.service;
 
 import com.example.sparta_3rd_newsfeed.comment.CommentStatus;
-import com.example.sparta_3rd_newsfeed.comment.dto.requestDto.CommentRequestDto;
-import com.example.sparta_3rd_newsfeed.comment.dto.responseDto.CommentResponseDto;
 import com.example.sparta_3rd_newsfeed.comment.dto.responseDto.SummarizedCommentResponseDto;
 import com.example.sparta_3rd_newsfeed.comment.dto.responseDto.SummarizedReplyResponseDto;
 import com.example.sparta_3rd_newsfeed.comment.entity.Comment;
@@ -18,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
