@@ -5,7 +5,9 @@
 sns어플리케이션을 만들어 게시글을 쓸수 있습니다
 
 ## API 명세서 
-[Click here to view the API documentation](https://www.notion.so/teamsparta/API-6d38bce5e6de48b8a2d3e2ea2493ea29?pvs=4)
+<a href="https://github.com/user-attachments/files/18878573/_API_.pdf" target="_blank">
+<img src="https://img.shields.io/badge/뉴스피드 API-193440.svg?style=for-the-badge"/>
+</a>
 
 ## ERD
 ![Image](https://github.com/user-attachments/assets/157ef113-28c4-45a7-b82c-3ef768d6cc74)
